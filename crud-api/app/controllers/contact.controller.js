@@ -2,25 +2,32 @@ const db = require("../model");
 const Contact = db.contacts;
 const Op = db.Sequelize.Op;
 
+// Validate fields
+function validateFields (req, res) {
+  if (!req.body.number || !req.body.firstName || !req.body.lastName) {
+    res.status(400).send({
+      message: "Phone Number, first name, and last name can't be empty!"
+    });
+    return false;
+  }
+  else if (!req.body.number.match(/^\+\d+[ ]\d+[ ]\d{6,}$/)) {
+      res.status(400).send({
+          message: "Phone Number have wrong format!"
+        });
+        return false;
+  }
+  else return true
+}
+
 // Create and Save a new Contact
 exports.create = (req, res) => {
-    // Validate request
-    if (!req.body.number) {
-      res.status(400).send({
-        message: "Phone Number can't be empty!"
-      });
-      return;
-    }
-    else if (!req.body.number.match(/^\+\d+[ ]\d+[ ]\d{6,}$/)) {
-        res.status(400).send({
-            message: "Phone Number have wrong format!"
-          });
-          return;
-    }
-  
+  // Validate request
+  if (validateFields (req, res)) {
+
     // Create a Contact
     const contact = {
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       number: req.body.number
     };
   
@@ -35,44 +42,50 @@ exports.create = (req, res) => {
             err.message || "Some error occurred while creating the Contact."
         });
       });
+    };
   };
 
 // Retrieve all Contacts from the database.
 exports.findAll = (req, res) => {
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-  
-    Contact.findAll({ where: condition })
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while retrieving contacts."
-        });
+  const keyword = req.query.keyword;
+  var condition = keyword ? { [Op.or] : [
+    { firstName: { [Op.like]: `%${keyword}%` }},
+    { lastName: { [Op.like]: `%${keyword}%` }},
+    { number: { [Op.like]: `%${keyword}%` }}
+  ] } : null;
+
+  Contact.findAll({ where: condition })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving contacts."
       });
+    });
   };
 
 // Find a single Contact with an id
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-  
-    Contact.findByPk(id)
-      .then(data => {
-        res.send(data);
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: `Error retrieving Contact with id=${id}.`
-        });
+  const id = req.params.id;
+
+  Contact.findByPk(id)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: `Error retrieving Contact with id=${id}.`
       });
+    });
   };
 
 // Update a Contact by the id in the request
 exports.update = (req, res) => {
-    const id = req.params.id;
-  
+  const id = req.params.id;
+  // Validate request
+  if (validateFields (req, res)) {
     Contact.update(req.body, {
       where: { id: id }
     })
@@ -92,4 +105,5 @@ exports.update = (req, res) => {
           message: `Error updating Contact with id=${id}.`
         });
       });
+    };
   };
