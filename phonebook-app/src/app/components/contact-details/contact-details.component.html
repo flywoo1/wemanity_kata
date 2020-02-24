@@ -1,0 +1,39 @@
+<div class="edit-form">
+    <h4>Contact</h4>
+    <form *ngIf="currentContact">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          [ngModel]="currentContact.firstName"
+          (ngModelChange)="clearMessage()"
+          name="firstName"/>
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="lastName"
+          [ngModel]="currentContact.lastName"
+          (ngModelChange)="clearMessage()"
+          name="lastName"/>
+      </div>
+      <div class="form-group">
+        <label for="number">Number</label>
+        <input
+          type="text"
+          class="form-control"
+          id="number"
+          [ngModel]="currentContact.number"
+          (ngModelChange)="clearMessage()"
+          name="number"/>
+      </div>
+    </form>
+    <button type="submit" class="badge badge-success" (click)="updateContact()">
+      Update
+    </button>
+    <p>{{ message }}</p>
+  </div>

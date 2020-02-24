@@ -1,0 +1,33 @@
+<div class="list row">
+    <div class="col-md-8">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by name or phone number"
+          [(ngModel)]="keyword"
+          (keyup)="searchByKeyword()"/>
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="searchByKeyword()">
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h4>Contacts List</h4>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let contact of contacts; let i = index">
+          {{ contact.firstName }} {{ contact.lastName }} {{ contact.number }}
+          <a class="badge badge-warning" href="/contacts/{{ contact.id }}">
+            Edit
+          </a> 
+        </li>
+      </ul>
+    </div>
+  </div>

@@ -1,0 +1,39 @@
+<div class="submit-form">
+    <div *ngIf="!submitted">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          required
+          [(ngModel)]="contact.firstName"
+          name="firstName"/>
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="lastName"
+          required
+          [(ngModel)]="contact.lastName"
+          name="lastName"/>
+      </div>
+      <div class="form-group">
+        <label for="number">Number</label>
+        <input
+          class="form-control"
+          id="number"
+          required
+          [(ngModel)]="contact.number"
+          name="number"/>
+      </div>  
+      <button (click)="saveContact()" class="btn btn-success">Submit</button>
+      <p>{{ message }}</p>
+    </div>  
+    <div *ngIf="submitted">
+      <h4>Contact successfully added!</h4>
+      <button class="btn btn-success" (click)="newContact()">Add</button>
+    </div>
+  </div>
